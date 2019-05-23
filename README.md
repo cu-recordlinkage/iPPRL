@@ -42,7 +42,7 @@ Approach  |	<ul><li>Develop methods and software to: <ul><li>Determine if data a
 Milestone       | Details 
 ----------------| -------------
 [Individual Linkage Data Specifications](https://github.com/cu-record-linkage/iPPRL/blob/master/linkability/individual_linkage_specs.md) |  Data structure and conventions for Individual Linkage data specifications
-[Linkage Metrics](https://github.com/cu-record-linkage/iPPRL/blob/master/linkability/Metrics_Table.md) | Intrinsic Data Quality and Distributional Meatrics
+[Linkage Metrics](https://github.com/cu-record-linkage/iPPRL/blob/master/linkability/Metrics_Table.md) | Intrinsic Data Quality and Distributional Metrics
 
 
 
