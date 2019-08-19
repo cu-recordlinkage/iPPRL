@@ -43,6 +43,6 @@ Milestone       | Details
 ----------------| -------------
 [Individual Linkage Data Specifications](https://github.com/cu-recordlinkage/iPPRL/blob/master/linkability/individual_linkage_specs.md) |  Data structure and conventions for Individual Linkage data specifications
 [Linkage Metrics](https://github.com/cu-recordlinkage/iPPRL/blob/master/linkability/Metrics_Table.md) | Intrinsic Data Quality and Distributional Metrics
-
+[Linkability Assessment on Synthetic Data](https://github.com/cu-recordlinkage/iPPRL/blob/master/linkability/Assessment_Synthetic.md) | Linkability measures using the 30K corrupted synthetic data set
 
 
