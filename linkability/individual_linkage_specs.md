@@ -5,7 +5,7 @@ Record linkage (RL) is a family of methods to detect duplicate patient records o
 ### Description
 Linkage data specifications include the data structure and data conventions used to construct extract, transfer and load (ETL) programs that transfer person-specific clear-text identifiers (potential linkage variables) from a local database at a data site into a flat file. In clear-text record linkage (CTRL), the clear-text file, also referred to as a finder file, can be used by a trusted third party (TTP) directly to link records. A data site can be the TTP in use cases where it is performing internal RL. In privacy-preserving record linkage (PPRL), clear-text identifiers are never transferred outside local environments at any point during the record linkage process. The clear-text flat file is cryptographically hashed locally using one-way hashing functions (i.e., SHA-256) to produce a hashed data file, also in flat file format. Only the hashed data file is transferred to the TTP. Figure 1 illustrates the CTRL and PPRL linkage data flows and the role of the Linkage Specifications described in this document.
 
-![alt text](https://github.com/cu-record-linkage/iPPRL/blob/master/images/linkage_spec_fig1.PNG "Figure 1")
+![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/linkage_spec_fig1.PNG "Figure 1")
 
 
 ### Data Format conventions
