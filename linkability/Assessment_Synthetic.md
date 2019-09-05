@@ -16,7 +16,7 @@ To observe the association between Data Quality and linkability, we created a sy
 
 See documentation here:  
 [Corrupting Existing Data](https://github.com/cu-recordlinkage/ipprl_tools/blob/master/ipprl_tools/docs/IPPRL_Tools_Documentation__Corrupting_Existing_Data.pdf).
-[Synthetic Data Corruption Tools](https://github.com/cu-recordlinkage/ipprl_tools/blob/master/ipprl_tools/docs/IPPRL_Tools_Documentation__Synthetic_Data_Corruption_Tools.pdf).
+</br> [Synthetic Data Corruption Tools](https://github.com/cu-recordlinkage/ipprl_tools/blob/master/ipprl_tools/docs/IPPRL_Tools_Documentation__Synthetic_Data_Corruption_Tools.pdf).
 
 
 ## Linkability Assessment 
