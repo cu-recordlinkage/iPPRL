@@ -1,7 +1,7 @@
 # Linkability Assessment on Synthetic Data
 
-## Synthetic Data Generation
-To observe the association between DQ and linkability, we created a synthetic dataset with 300K records, containing values for 12 fields such as: first name (FN), last name (LN), date of birth (DOB), social security number (SSN), sex, and address. Realistic initial values were obtained using the Mockaroo tool. To simulate data errors and missingness, we applied data corruption methods described in Table 1. Each corruption method allows the user to select the percentage of values in each column which are modified by the corruption. Corruption rates were chosen based on our team’s experience with linkage data. Source code and documentation here: [iPPRL Tools](https://github.com/cu-recordlinkage/ipprl_tools).
+## Corruption Methods and Synthetic Data 
+To observe the association between Data Quality and linkability, we created a synthetic dataset with 300K records, containing values for 12 fields such as: first name (FN), last name (LN), date of birth (DOB), social security number (SSN), sex, and address. Realistic initial values were obtained using the Mockaroo tool. To simulate data errors and missingness, we applied data corruption methods described in Table 1. Each corruption method allows the user to select the percentage of values in each column which are modified by the corruption. Corruption rates were chosen based on our team’s experience with linkage data. Source code and documentation here: [iPPRL Tools](https://github.com/cu-recordlinkage/ipprl_tools).
 
 **Table 1 - Data corruption methods**
 
@@ -14,8 +14,13 @@ To observe the association between DQ and linkability, we created a synthetic da
 | Replace   | Replaces a number with a random (different) value                           | “MICHAEL” ->  “PETER”   |
 | Drop      | Replaces a string with a NULL value                                         | “MICHAEL” ->  NULL      |
 
+See documentation here:  
+[Corrupting Existing Data](https://github.com/cu-recordlinkage/ipprl_tools/blob/master/ipprl_tools/docs/IPPRL_Tools_Documentation__Corrupting_Existing_Data.pdf).
+[Synthetic Data Corruption Tools](https://github.com/cu-recordlinkage/ipprl_tools/blob/master/ipprl_tools/docs/IPPRL_Tools_Documentation__Synthetic_Data_Corruption_Tools.pdf).
+
+
 ## Linkability Assessment 
-Our [Linkage Metrics Table](https://github.com/cu-recordlinkage/iPPRL/blob/master/linkability/Metrics_Table.md) defines a core set of linkability and distributional measures, which provide insight into the linkage characteristics of a variable. Intrinsic DQ measures the availability (data field is present or not) of linkage data, data missingness and data validity. Distributional measures of a linkage variable are critical to understanding its discrimination power. A linkage variable that has high completeness, but only a single value, has no ability to discriminate unique individuals. In contrast, a value that is often missing, but when present is extremely discriminating, can be valuable for matching unique individuals. The quality of a linkage variable is also measured using Shannon’s entropy. PTME is a normalized SE value, which represents the diversity and the distribution of values in a linkage variable. High quality linkage variables have PTME values approaching 1. 
+Our [Linkage Metrics Table](https://github.com/cu-recordlinkage/iPPRL/blob/master/linkability/Metrics_Table.md) defines a core set of linkability and distributional measures, which provide insight into the linkage characteristics of a variable. Intrinsic DQ measures the availability (data field is present or not) of linkage data, data missingness and data validity. Distributional measures of a linkage variable are critical to understanding its discrimination power. A linkage variable that has high completeness, but only a single value, has no ability to discriminate unique individuals. In contrast, a value that is often missing, but when present is extremely discriminating, can be valuable for matching unique individuals. The quality of a linkage variable is also measured using Shannon’s entropy. PTME is a normalized SE value, which represents the diversity and the distribution of values in a linkage variable. High quality linkage variables have PTME values approaching 1. See documentation here: [Linkability Measures](https://github.com/cu-recordlinkage/ipprl_tools/blob/master/ipprl_tools/docs/IPPRL_Tools_Documentation__Linkability.pdf).
 
 **Table 2. Results of key quality and linkability measures using the 30K corrupted synthetic data set.**
 ![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/linkability_synthetic_results.png "Table 2")
