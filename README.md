@@ -36,6 +36,8 @@ Design Element  | Description
 Goal  				| To improve data quality (DQ) and accelerate research by lowering the technical and regulatory barriers to multi-institutional data sharing via the development of incremental privacy-preserving record linkage (PPRL) methods
 Approach  |	<ul><li>Develop methods and software to: <ul><li>Determine if data are fit to be used for linkage</li><li>Perform incremental and secure record linkage to improve quality of data and support research</li></ul></li><li>Define common presentation and format of linkage data</li><li>Develop a dataset as ground truth to confirm the accuracy of record linkage using real patient data from two data sources in Colorado</li><li>Measure the improvement in quality of unlinked and linked data</li></ul>
 
+***Funding***
+Research reported was funded through Patient-Centered Outcomes Research Institute® (PCORI®) Award ME-2018C1-11287. The statements presented in this publication are solely the responsibility of the author(s) and do not necessarily represent the views of the Patient-Centered Outcomes Research Institute® (PCORI®), its Board of Governors or Methodology Committee. 
 
 ***Completed Milestones***
 
