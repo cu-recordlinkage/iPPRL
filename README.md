@@ -46,5 +46,5 @@ Milestone       | Details
 [Transitive PPRL](https://github.com/cu-recordlinkage/iPPRL/blob/master/Transitive_Privacy_Preserving_Record_Linkage.pdf) | Transitive PPRL captures linkages between multiple linked record pairs that may be missing using traditional pairwise only methods
 
 
-***Funding***
+## Funding
 Research reported was funded through Patient-Centered Outcomes Research Institute® (PCORI®) Award ME-2018C1-11287. The statements presented in this publication are solely the responsibility of the author(s) and do not necessarily represent the views of the Patient-Centered Outcomes Research Institute® (PCORI®), its Board of Governors or Methodology Committee. 
