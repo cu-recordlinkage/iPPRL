@@ -65,6 +65,7 @@ select 'linked'
 )
 */
 -- Histogram viewof observation periods summarized above
+/*
 , obs_period_histo as (
 select 'Unlinked' as type
 	, obs_months, count(uid) as num_IDs
@@ -78,5 +79,6 @@ select 'Linked'
 Order by type asc, obs_months asc
 )
 select * from obs_period_histo
-
+*/
+select * from obs_period_uid order by min_startdate asc
 
