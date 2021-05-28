@@ -12,6 +12,8 @@ WARNING: Destroys the aim4 schema so ALL tables are destroyed.
 Created by: Michael Kahn (michael.kahn@cuanschutz.edu)
 Version date: 2021-04-21
 
+VERSION: 2021-05-27: Cut data sets by startdate rather than enddate (effectively ignore enddate)
+
 */
 
 
@@ -238,23 +240,25 @@ DROP TABLE IF EXISTS aim4.month10_2013_chd_overall_cohort;
 DROP TABLE IF EXISTS aim4.month11_2013_chd_overall_cohort;
 DROP TABLE IF EXISTS aim4.month12_2013_chd_overall_cohort;
 
-create table aim4.year_2011_chd_overall_cohort as select * from aim4.year_2011_cohort join aim4.chd_overall_cast on aim4.year_2011_cohort.id = aim4.chd_overall_cast.study_id where enddate between '01-01-2011' and '12-31-2011';
-create table aim4.quarter1_2012_chd_overall_cohort as select * from aim4.quarter1_2012_cohort join aim4.chd_overall_cast on aim4.quarter1_2012_cohort.id = aim4.chd_overall_cast.study_id where enddate between '01-01-2012' and '3-31-2012';
-create table aim4.quarter2_2012_chd_overall_cohort as select * from aim4.quarter2_2012_cohort join aim4.chd_overall_cast on aim4.quarter2_2012_cohort.id = aim4.chd_overall_cast.study_id where enddate between  '04-01-2012' and '06-30-2012';
-create table aim4.quarter3_2012_chd_overall_cohort as select * from aim4.quarter3_2012_cohort join aim4.chd_overall_cast on aim4.quarter3_2012_cohort.id = aim4.chd_overall_cast.study_id where enddate between '07-01-2012' and '09-30-2012';
-create table aim4.quarter4_2012_chd_overall_cohort as select * from aim4.quarter4_2012_cohort join aim4.chd_overall_cast on aim4.quarter4_2012_cohort.id = aim4.chd_overall_cast.study_id where enddate between '09-01-2012' and '12-31-2012';
-create table aim4.month1_2013_chd_overall_cohort as select * from aim4.month1_2013_cohort join aim4.chd_overall_cast on aim4.month1_2013_cohort.id = aim4.chd_overall_cast.study_id where enddate between '01-01-2013' and  '01-31-2013';
-create table aim4.month2_2013_chd_overall_cohort as select * from aim4.month2_2013_cohort join aim4.chd_overall_cast on aim4.month2_2013_cohort.id = aim4.chd_overall_cast.study_id where enddate between '02-01-2013' and '02-28-2013';
-create table aim4.month3_2013_chd_overall_cohort as select * from aim4.month3_2013_cohort join aim4.chd_overall_cast on aim4.month3_2013_cohort.id = aim4.chd_overall_cast.study_id where enddate between '03-01-2013' and '03-31-2013';
-create table aim4.month4_2013_chd_overall_cohort as select * from aim4.month4_2013_cohort join aim4.chd_overall_cast on aim4.month4_2013_cohort.id = aim4.chd_overall_cast.study_id where enddate between '04-01-2013' and '04-30-2013';
-create table aim4.month5_2013_chd_overall_cohort as select * from aim4.month5_2013_cohort join aim4.chd_overall_cast on aim4.month5_2013_cohort.id = aim4.chd_overall_cast.study_id where enddate between '05-01-2013' and '05-31-2013';
-create table aim4.month6_2013_chd_overall_cohort as select * from aim4.month6_2013_cohort join aim4.chd_overall_cast on aim4.month6_2013_cohort.id = aim4.chd_overall_cast.study_id where enddate between '06-01-2013' and '06-30-2013';
-create table aim4.month7_2013_chd_overall_cohort as select * from aim4.month7_2013_cohort join aim4.chd_overall_cast on aim4.month7_2013_cohort.id = aim4.chd_overall_cast.study_id where enddate between '07-01-2013' and '07-31-2013';
-create table aim4.month8_2013_chd_overall_cohort as select * from aim4.month8_2013_cohort join aim4.chd_overall_cast on aim4.month8_2013_cohort.id = aim4.chd_overall_cast.study_id where enddate between '08-01-2013' and '08-30-2013';
-create table aim4.month9_2013_chd_overall_cohort as select * from aim4.month9_2013_cohort join aim4.chd_overall_cast on aim4.month9_2013_cohort.id = aim4.chd_overall_cast.study_id where enddate between '09-01-2013' and '09-30-2013';
-create table aim4.month10_2013_chd_overall_cohort as select * from aim4.month10_2013_cohort join aim4.chd_overall_cast on aim4.month10_2013_cohort.id = aim4.chd_overall_cast.study_id where enddate between '10-01-2013' and '10-31-2013';
-create table aim4.month11_2013_chd_overall_cohort as select * from aim4.month11_2013_cohort join aim4.chd_overall_cast on aim4.month11_2013_cohort.id = aim4.chd_overall_cast.study_id where enddate between '11-01-2013' and '11-30-2013';
-create table aim4.month12_2013_chd_overall_cohort as select * from aim4.month12_2013_cohort join aim4.chd_overall_cast on aim4.month12_2013_cohort.id = aim4.chd_overall_cast.study_id where enddate between '12-01-2013' and '12-31-2013';
+/* 2021--5-27 Cut data by startdate rather than enddate */
+
+create table aim4.year_2011_chd_overall_cohort as select * from aim4.year_2011_cohort join aim4.chd_overall_cast on aim4.year_2011_cohort.id = aim4.chd_overall_cast.study_id where startdate between '01-01-2011' and '12-31-2011';
+create table aim4.quarter1_2012_chd_overall_cohort as select * from aim4.quarter1_2012_cohort join aim4.chd_overall_cast on aim4.quarter1_2012_cohort.id = aim4.chd_overall_cast.study_id where startdate between '01-01-2012' and '3-31-2012';
+create table aim4.quarter2_2012_chd_overall_cohort as select * from aim4.quarter2_2012_cohort join aim4.chd_overall_cast on aim4.quarter2_2012_cohort.id = aim4.chd_overall_cast.study_id where startdate between  '04-01-2012' and '06-30-2012';
+create table aim4.quarter3_2012_chd_overall_cohort as select * from aim4.quarter3_2012_cohort join aim4.chd_overall_cast on aim4.quarter3_2012_cohort.id = aim4.chd_overall_cast.study_id where startdate between '07-01-2012' and '09-30-2012';
+create table aim4.quarter4_2012_chd_overall_cohort as select * from aim4.quarter4_2012_cohort join aim4.chd_overall_cast on aim4.quarter4_2012_cohort.id = aim4.chd_overall_cast.study_id where startdate between '09-01-2012' and '12-31-2012';
+create table aim4.month1_2013_chd_overall_cohort as select * from aim4.month1_2013_cohort join aim4.chd_overall_cast on aim4.month1_2013_cohort.id = aim4.chd_overall_cast.study_id where startdate between '01-01-2013' and  '01-31-2013';
+create table aim4.month2_2013_chd_overall_cohort as select * from aim4.month2_2013_cohort join aim4.chd_overall_cast on aim4.month2_2013_cohort.id = aim4.chd_overall_cast.study_id where startdate between '02-01-2013' and '02-28-2013';
+create table aim4.month3_2013_chd_overall_cohort as select * from aim4.month3_2013_cohort join aim4.chd_overall_cast on aim4.month3_2013_cohort.id = aim4.chd_overall_cast.study_id where startdate between '03-01-2013' and '03-31-2013';
+create table aim4.month4_2013_chd_overall_cohort as select * from aim4.month4_2013_cohort join aim4.chd_overall_cast on aim4.month4_2013_cohort.id = aim4.chd_overall_cast.study_id where startdate between '04-01-2013' and '04-30-2013';
+create table aim4.month5_2013_chd_overall_cohort as select * from aim4.month5_2013_cohort join aim4.chd_overall_cast on aim4.month5_2013_cohort.id = aim4.chd_overall_cast.study_id where startdate between '05-01-2013' and '05-31-2013';
+create table aim4.month6_2013_chd_overall_cohort as select * from aim4.month6_2013_cohort join aim4.chd_overall_cast on aim4.month6_2013_cohort.id = aim4.chd_overall_cast.study_id where startdate between '06-01-2013' and '06-30-2013';
+create table aim4.month7_2013_chd_overall_cohort as select * from aim4.month7_2013_cohort join aim4.chd_overall_cast on aim4.month7_2013_cohort.id = aim4.chd_overall_cast.study_id where startdate between '07-01-2013' and '07-31-2013';
+create table aim4.month8_2013_chd_overall_cohort as select * from aim4.month8_2013_cohort join aim4.chd_overall_cast on aim4.month8_2013_cohort.id = aim4.chd_overall_cast.study_id where startdate between '08-01-2013' and '08-30-2013';
+create table aim4.month9_2013_chd_overall_cohort as select * from aim4.month9_2013_cohort join aim4.chd_overall_cast on aim4.month9_2013_cohort.id = aim4.chd_overall_cast.study_id where startdate between '09-01-2013' and '09-30-2013';
+create table aim4.month10_2013_chd_overall_cohort as select * from aim4.month10_2013_cohort join aim4.chd_overall_cast on aim4.month10_2013_cohort.id = aim4.chd_overall_cast.study_id where startdate between '10-01-2013' and '10-31-2013';
+create table aim4.month11_2013_chd_overall_cohort as select * from aim4.month11_2013_cohort join aim4.chd_overall_cast on aim4.month11_2013_cohort.id = aim4.chd_overall_cast.study_id where startdate between '11-01-2013' and '11-30-2013';
+create table aim4.month12_2013_chd_overall_cohort as select * from aim4.month12_2013_cohort join aim4.chd_overall_cast on aim4.month12_2013_cohort.id = aim4.chd_overall_cast.study_id where startdate between '12-01-2013' and '12-31-2013';
 
 
 
