@@ -79,66 +79,66 @@ create table aim4.month12_2013_chd_overall_cohort as select * from aim4.month12_
 
 
 
--- _chd_overall_cummulative contains chd clinical data during the cohort time period **AND ALL EARLIER PERIODS**
+-- _chd_overall_cumulative contains chd clinical data during the cohort time period **AND ALL EARLIER PERIODS**
 -- This would be all available data at the time of linkage (old and incremental).
--- If you need old data separate from incremental data, use _cummulative from previous time period for old data
+-- If you need old data separate from incremental data, use _cumulative from previous time period for old data
 --       and _cohort table for this time period for incremental data
 
-DROP TABLE IF EXISTS aim4.year_2011_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.quarter1_2012_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.quarter2_2012_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.quarter3_2012_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.quarter4_2012_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.month1_2013_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.month2_2013_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.month3_2013_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.month4_2013_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.month5_2013_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.month6_2013_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.month7_2013_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.month8_2013_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.month9_2013_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.month10_2013_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.month11_2013_chd_overall_cummulative;
-DROP TABLE IF EXISTS aim4.month12_2013_chd_overall_cummulative;
+DROP TABLE IF EXISTS aim4.year_2011_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.quarter1_2012_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.quarter2_2012_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.quarter3_2012_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.quarter4_2012_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.month1_2013_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.month2_2013_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.month3_2013_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.month4_2013_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.month5_2013_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.month6_2013_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.month7_2013_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.month8_2013_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.month9_2013_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.month10_2013_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.month11_2013_chd_overall_cumulative;
+DROP TABLE IF EXISTS aim4.month12_2013_chd_overall_cumulative;
 
-create table aim4.year_2011_chd_overall_cummulative as select * from aim4.year_2011_chd_overall_cohort;
-create table aim4.quarter1_2012_chd_overall_cummulative as 
-   (select distinct * from (select * from aim4.year_2011_chd_overall_cummulative UNION select * from aim4.quarter1_2012_chd_overall_cohort) a);
-create table aim4.quarter2_2012_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.quarter1_2012_chd_overall_cummulative UNION select * from aim4.quarter2_2012_chd_overall_cohort) a);   
-create table aim4.quarter3_2012_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.quarter2_2012_chd_overall_cummulative UNION select * from aim4.quarter3_2012_chd_overall_cohort) a);
-
-
-create table aim4.quarter4_2012_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.quarter3_2012_chd_overall_cummulative UNION select * from aim4.quarter4_2012_chd_overall_cohort) a);
-create table aim4.month1_2013_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.quarter4_2012_chd_overall_cummulative UNION select * from aim4.month1_2013_chd_overall_cohort) a);
-create table aim4.month2_2013_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.month1_2013_chd_overall_cummulative UNION select * from aim4.month2_2013_chd_overall_cohort) a);
-create table aim4.month3_2013_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.month2_2013_chd_overall_cummulative UNION select * from aim4.month3_2013_chd_overall_cohort) a);
-create table aim4.month4_2013_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.month3_2013_chd_overall_cummulative UNION select * from aim4.month4_2013_chd_overall_cohort) a);
-create table aim4.month5_2013_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.month4_2013_chd_overall_cummulative UNION select * from aim4.month5_2013_chd_overall_cohort) a);
-create table aim4.month6_2013_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.month5_2013_chd_overall_cummulative UNION select * from aim4.month6_2013_chd_overall_cohort) a);
-create table aim4.month7_2013_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.month6_2013_chd_overall_cummulative UNION select * from aim4.month7_2013_chd_overall_cohort) a);
-create table aim4.month8_2013_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.month7_2013_chd_overall_cummulative UNION select * from aim4.month8_2013_chd_overall_cohort) a);
-create table aim4.month9_2013_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.month8_2013_chd_overall_cummulative UNION select * from aim4.month9_2013_chd_overall_cohort) a);
-create table aim4.month10_2013_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.month9_2013_chd_overall_cummulative UNION select * from aim4.month10_2013_chd_overall_cohort) a);
-create table aim4.month11_2013_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.month10_2013_chd_overall_cummulative UNION select * from aim4.month11_2013_chd_overall_cohort) a);
+create table aim4.year_2011_chd_overall_cumulative as select * from aim4.year_2011_chd_overall_cohort;
+create table aim4.quarter1_2012_chd_overall_cumulative as 
+   (select distinct * from (select * from aim4.year_2011_chd_overall_cumulative UNION select * from aim4.quarter1_2012_chd_overall_cohort) a);
+create table aim4.quarter2_2012_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.quarter1_2012_chd_overall_cumulative UNION select * from aim4.quarter2_2012_chd_overall_cohort) a);   
+create table aim4.quarter3_2012_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.quarter2_2012_chd_overall_cumulative UNION select * from aim4.quarter3_2012_chd_overall_cohort) a);
 
 
-create table aim4.month12_2013_chd_overall_cummulative as
-   (select distinct * from (select * from aim4.month11_2013_chd_overall_cummulative UNION select * from aim4.month12_2013_chd_overall_cohort) a);
+create table aim4.quarter4_2012_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.quarter3_2012_chd_overall_cumulative UNION select * from aim4.quarter4_2012_chd_overall_cohort) a);
+create table aim4.month1_2013_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.quarter4_2012_chd_overall_cumulative UNION select * from aim4.month1_2013_chd_overall_cohort) a);
+create table aim4.month2_2013_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.month1_2013_chd_overall_cumulative UNION select * from aim4.month2_2013_chd_overall_cohort) a);
+create table aim4.month3_2013_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.month2_2013_chd_overall_cumulative UNION select * from aim4.month3_2013_chd_overall_cohort) a);
+create table aim4.month4_2013_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.month3_2013_chd_overall_cumulative UNION select * from aim4.month4_2013_chd_overall_cohort) a);
+create table aim4.month5_2013_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.month4_2013_chd_overall_cumulative UNION select * from aim4.month5_2013_chd_overall_cohort) a);
+create table aim4.month6_2013_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.month5_2013_chd_overall_cumulative UNION select * from aim4.month6_2013_chd_overall_cohort) a);
+create table aim4.month7_2013_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.month6_2013_chd_overall_cumulative UNION select * from aim4.month7_2013_chd_overall_cohort) a);
+create table aim4.month8_2013_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.month7_2013_chd_overall_cumulative UNION select * from aim4.month8_2013_chd_overall_cohort) a);
+create table aim4.month9_2013_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.month8_2013_chd_overall_cumulative UNION select * from aim4.month9_2013_chd_overall_cohort) a);
+create table aim4.month10_2013_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.month9_2013_chd_overall_cumulative UNION select * from aim4.month10_2013_chd_overall_cohort) a);
+create table aim4.month11_2013_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.month10_2013_chd_overall_cumulative UNION select * from aim4.month11_2013_chd_overall_cohort) a);
+
+
+create table aim4.month12_2013_chd_overall_cumulative as
+   (select distinct * from (select * from aim4.month11_2013_chd_overall_cumulative UNION select * from aim4.month12_2013_chd_overall_cohort) a);
   
 
 
