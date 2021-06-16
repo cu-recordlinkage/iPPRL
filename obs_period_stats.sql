@@ -1,52 +1,66 @@
-with uid_groups as (
--- counts of UIDS per NID, partion() needed to keep UID
-	select run_id, network_id, uid, count(uid) over (partition by run_id,network_id) as cardinality
-	from aim4.network_id )
--- Filter out UIDs that do not participate in at least one record linakage (Count(uid>1) per NID)
-, linked_uids as (
-    select run_id, network_id, uid, cardinality
-    from uid_groups
-    where cardinality > 1
+with nid_sid as (
+     select distinct ni.run_id, ni.network_id as nid, rp.study_id as sid
+        from aim4.network_id ni join aim4.merged_source ms on ni.uid=ms.uid
+        join tz.raw_person rp on ms.id::int = rp.study_id 
 )
--- All UIDs seen from runs <= {run_to_analyze}
-, linked_uids_run as (
-    select :run_to_analyze as run_to_analyze, run_id, network_id, uid, cardinality 
-    from linked_uids
-    where run_id <= :run_to_analyze
+, sid_groups as (
+    -- counts of studyids per NID, partion() needed to keep SID
+        select run_id, nid, sid, count(sid) over (partition by run_id,nid) as cardinality
+        from nid_sid
+)    
+-- Filter out SIDs that do not participate in at least one record linakage (Count(SID>1) per NID)
+-- All SIDs seen from run <= runs_to_analyze
+, linked_sids_run as (
+        select :run_to_analyze as run_id, nid, sid, cardinality
+        from sid_groups
+        where cardinality > 1 and run_id <= :run_to_analyze
 )
--- Last run for every UID to local last NID
-, lastrun as (
-   select uid, max(run_id) as last_run
-   from linked_uids_run
-   group by uid 
-)
--- Use the network_id from the last run (based on conversation with Toan about using last NID NID)
-, linked_uids_lastrun as (
-   select lur.run_to_analyze as run_to_analyze, last_run, lur.uid, lur.network_id as last_network_id, cardinality 
-   from linked_uids_run lur join lastrun lr on (lur.uid = lr.uid and lur.run_id = lr.last_run)
-)
--- Add linkage and clinical vars to UIDs in this run using run cummulative data set
-, linked_clinical_dates_lastrun as (
-	select distinct lur.run_to_analyze, lur.last_network_id, ms.uid as uid, ms.id as study_id
-	, c.startdate, c.enddate_trunc
-	from linked_uids_lastrun lur join aim4.merged_source ms on (lur.uid = ms.uid)
- 	join :cumulative_to_use c on (ms.id = c.study_id)
-)
+    -- Last run for every SID to local last NID
+    , lastrun as (
+       select sid, max(run_id) as last_run
+       from linked_sids_run
+       group by sid 
+    )
+    -- Use the nid from the last run (based on technical note)
+    , linked_sids_lastrun as (
+       select lsr.run_id, lr.last_run, lsr.sid, lsr.nid as last_nid, cardinality 
+       from linked_sids_run lsr join lastrun lr on (lsr.sid = lr.sid and lsr.run_id = lr.last_run)
+ -- last_run isn't used anywhere after this query
+ -- Add clinical vars using cumulative_to_use clinical data
+    )    
+   , enc_key as (
+    	select row_number() over() as encid, c.* from :cumulative_to_use c
+    )
+    , clinvs_lastrun as (
+        select distinct run_id, last_nid, ek.study_id as sid, encid, startdate, enddate, enddate2, enddate_trunc, encountertype as enc_type
+            , providertype as prov_type, heightinches as hgt, weightpounds as wgt, siteid
+        from linked_sids_lastrun lsr join enc_key ek on (lsr.sid = ek.study_id)
+    )    
 -- obs period = min/max date in months using stackoverflow formula for #months.
 -- obs_period_nid are observation periods from clinical data based on NID
 -- obs_period_sid are observation periods from raw_persons based in STUDY_ID
+-- enddate_trunc is either true enddate (if < incremental load enddate), incremental load enddate (if > incremental load enddate) or startdate (enddate is null)
 , obs_period_sid as (
-	select 'Person/SID' as type, study_id as ID, min(startdate) as min_startdate, max(enddate_trunc) as max_enddate
+	select 'person' as type, sid as ID, min(startdate) as min_startdate, max(enddate_trunc) as max_enddate
     , EXTRACT(year FROM age(max(enddate_trunc),min(startdate)))*12 + EXTRACT(month FROM age(max(enddate_trunc),min(startdate))) + 1 as obs_months
-	from linked_clinical_dates_lastrun
-	group by type, study_id
+	from clinvs_lastrun
+	group by type, sid
 )
 , obs_period_nid as (
-	select 'Network/NID' as type, last_network_id as ID, min(startdate) as min_startdate, max(enddate_trunc) as max_enddate
+	select 'network' as type, last_nid as ID, min(startdate) as min_startdate, max(enddate_trunc) as max_enddate
     , EXTRACT(year FROM age(max(enddate_trunc),min(startdate)))*12 + EXTRACT(month FROM age(max(enddate_trunc),min(startdate))) + 1 as obs_months
-	from linked_clinical_dates_lastrun
-	group by type, last_network_id
+	from clinvs_lastrun
+	group by type, last_nid
 )
+select startdate, enddate, enddate2, enddate_trunc from clinvs_lastrun where enddate is not null and enddate_trunc < enddate
+
+
+select startdate, enddate from aim4.chd_overall_cast where enddate is not null and enddate < startdate
+
+	
+	
+	
+
 , obs_period_stats as (
 select type
 	, min(min_startdate) as min_startdate

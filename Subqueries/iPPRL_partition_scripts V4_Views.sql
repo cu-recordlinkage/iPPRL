@@ -122,7 +122,7 @@ CREATE OR REPLACE VIEW aim4.month5_2013_chd_clinvs as
 CREATE OR REPLACE VIEW aim4.month6_2013_chd_clinvs as 
  select *, least(enddate2, '06-30-2013'::date) as enddate_trunc from aim4.chd_overall_cast where startdate between '01-01-2011' and '06-30-2013';
 CREATE OR REPLACE VIEW aim4.month7_2013_chd_clinvs as 
- select *, least(enddate2, '07-31-2011'::date) as enddate_trunc from aim4.chd_overall_cast where startdate between '01-01-2011' and '07-31-2013';
+ select *, least(enddate2, '07-31-2013'::date) as enddate_trunc from aim4.chd_overall_cast where startdate between '01-01-2011' and '07-31-2013';
 CREATE OR REPLACE VIEW aim4.month8_2013_chd_clinvs as 
  select *, least(enddate2, '08-31-2013'::date) as enddate_trunc from aim4.chd_overall_cast where startdate between '01-01-2011' and '08-31-2013';
 CREATE OR REPLACE VIEW aim4.month9_2013_chd_clinvs as 
