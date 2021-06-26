@@ -1,6 +1,7 @@
 # Incremental Privacy-Preserving Record Linkage (iPPRL) Project
 
 PI: Toan Ong, PhD, University of Colorado
+co_PI: Michael Kahn MD, PhD
 
 ## What is the research about? 
 
@@ -44,6 +45,8 @@ Milestone       | Details
 [Linkage Metrics](https://github.com/cu-recordlinkage/iPPRL/blob/master/linkability/Metrics_Table.md) | Intrinsic Data Quality and Distributional Metrics
 [Linkability Assessment on Synthetic Data](https://github.com/cu-recordlinkage/iPPRL/blob/master/linkability/Assessment_Synthetic.md) | Linkability measures using the 30K corrupted synthetic data set
 [Transitive PPRL](https://github.com/cu-recordlinkage/iPPRL/blob/master/Transitive_Privacy_Preserving_Record_Linkage.pdf) | Transitive PPRL captures linkages between multiple linked record pairs that may be missing using traditional pairwise only methods
+
+[Technical details available on wiki](https://github.com/cu-recordlinkage/iPPRL/wiki)
 
 
 ## Funding
