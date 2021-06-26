@@ -1,6 +1,6 @@
 # Incremental Privacy-Preserving Record Linkage (iPPRL) Project
 
-PI: Toan Ong, PhD, University of Colorado
+PI: Toan Ong, PhD, University of Colorado   
 co_PI: Michael Kahn MD, PhD
 
 ## What is the research about? 
