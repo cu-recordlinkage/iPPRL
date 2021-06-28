@@ -22,3 +22,50 @@ if rl_type[1] in ['ctrl','pprl']:
 else: 
     incremental = True
 ```
+
+## Data quality measures in Record linkage
+The core DQ idea is to compare DQ measures using unlinked rows versus linked rows.
+
+* Linkage can occur at:
+    * the network level - denoted as by_nid
+    * the patient level - denoted as by_sid
+* Unlikned clinical encounter data are denoted as by_encnum
+
+This work defines four data quality measures that can be calculated for both linked and unlinked data:
+1. Data Completeness
+2. Data Density
+3. Value Density
+4. Observation Period Durations Completeness
+
+Many other DQ concepts exist but not all have equivalent computational analogues in both unlinked and linked data. The most difficult issue in creating DQ measures that are comparable between unlinked and linked data is determining the correct denominator to use across measures and runs. Each DQ measure defined here as its denominator described in the Python function that calculates its values.
+
+### Assumptions:
+1. Record linkage has been performed and linkages are stored in a schema and table called .network_id
+2. Clinical data exists in two formats:
+    *  each incremental data load is in a separate table
+    *  there exists a table that contains cumulative data from the first data load to the current data load
+3. The JupyterLab notebook Aim4_Data_Partition_Scripts will help create these scripts from the existing data sets
+
+## Changelog
+* 2021-06-20: All DQ runs for iPPRL, iCTRL, PPRL and CTRL executed
+* 2021-06-15: SQL for Completeness/Data Density reimplemented as one query.
+* 2021-05-26: Replaced network_id with last_network_id for each run to get "final" NID for that run
+* 2021-05-27: Reran data sets to use startdate for time cutoffs. No longer using enddate for anything
+* 2021-06-02: Josh converted one-shot run to loop over 17 runs; created final data structures for all run
+
+## Technical Preamble: Description of Initial Data Set & Variables naming conventions
+
+
+* Data aggregated at the NID level are "network linked". Variables are named "_by_nid"
+* Data aggregated at the ID/SID level are "patient linked". Variables are named "_by_studyid"
+
+### ALL ANALYSES ARE PERFORMED ON THE COHORT OF PATIENTS THAT PARTICIPATED IN AT LEAST ONE LINKAGE. PATIENTS THAT DID NOT LINK ("SINGLETONS") ARE REMOVED FROM THESE CALCULATIONS.
+
+In the above diagram, NID_1/UID_10 would not be included in the analytic cohort because NID_1 ultimately links back to only a single Person record (StudyID=100)
+UID_20 and UID_21 are linked via NID_2. These two UIDs link to the same patient record (ID_200 / StudyID_200). This NID will also not be included
+UID_30, UID_31, and UID_32 are linked via NID_2. UID_30 and UID_31 link to the same patient record but UIC_32 links to a different patient record. THhus NID_3 links two different patient records (StudyID_300 and StudyID_400). NIC3 will be included in the linkage cohort
+We can use the cardinality of StudyID (n_sid) to determine linkage status
+
+**Justification:** This study is examining how record linkage alters DQ measures. Patients who never link are not the focus of this study. Also since the number of linkages is much smaller than non-linkages, removing the non-linked patient allows DQ changes to be seen.
+
+
