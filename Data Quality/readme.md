@@ -8,4 +8,17 @@ This Jupyter Lab notebook embodies the analytics used to explore Aim 4 of the ab
 
 This notebook uses a data set containing full personal health information (PHI) as defined by the Department of Health and Human Services HIPAA regulations. Thus, the underlying data sets cannot be made available. This notebook only runs within the secure EUREKA analytics environment maintained by Health Data Compass in the Colorado Center for Personalized Medicine at CU-AMC. However, the logic for analyzing data quality before and after record linkage is generic. A sample data set based on synthetic data will be added to this notebook at a future date.
 
+```
+# Select which record linkage method to be analyzed
+ctrl = ['job_28433','ctrl']
+ictrl = ['job_28798','ictrl']
+ipprl = ['job_26137','ipprl']
+pprl = ['job_27970','pprl']
 
+rl_type = ipprl
+
+if rl_type[1] in ['ctrl','pprl']:
+    incremental = False
+else: 
+    incremental = True
+```
