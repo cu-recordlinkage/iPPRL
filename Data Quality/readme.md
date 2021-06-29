@@ -46,6 +46,7 @@ Many other DQ concepts exist but not all have equivalent computational analogues
     *  there exists a table that contains cumulative data from the first data load to the current data load
 3. The JupyterLab notebook Aim4_Data_Partition_Scripts will help create these scripts from the existing data sets
 
+
 ## Changelog
 * 2021-06-20: All DQ runs for iPPRL, iCTRL, PPRL and CTRL executed
 * 2021-06-15: SQL for Completeness/Data Density reimplemented as one query.
@@ -53,13 +54,14 @@ Many other DQ concepts exist but not all have equivalent computational analogues
 * 2021-05-27: Reran data sets to use startdate for time cutoffs. No longer using enddate for anything
 * 2021-06-02: Josh converted one-shot run to loop over 17 runs; created final data structures for all run
 
-## Technical Preamble: Description of Initial Data Set & Variables naming conventions
 
+## Technical Preamble: Description of Initial Data Set & Variables naming conventions
+![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/technicalpreamble.png)
 
 * Data aggregated at the NID level are "network linked". Variables are named "_by_nid"
 * Data aggregated at the ID/SID level are "patient linked". Variables are named "_by_studyid"
 
-### ALL ANALYSES ARE PERFORMED ON THE COHORT OF PATIENTS THAT PARTICIPATED IN AT LEAST ONE LINKAGE. PATIENTS THAT DID NOT LINK ("SINGLETONS") ARE REMOVED FROM THESE CALCULATIONS.
+**ALL ANALYSES ARE PERFORMED ON THE COHORT OF PATIENTS THAT PARTICIPATED IN AT LEAST ONE LINKAGE. PATIENTS THAT DID NOT LINK ("SINGLETONS") ARE REMOVED FROM THESE CALCULATIONS.**
 
 In the above diagram, NID_1/UID_10 would not be included in the analytic cohort because NID_1 ultimately links back to only a single Person record (StudyID=100)
 UID_20 and UID_21 are linked via NID_2. These two UIDs link to the same patient record (ID_200 / StudyID_200). This NID will also not be included
@@ -68,4 +70,15 @@ We can use the cardinality of StudyID (n_sid) to determine linkage status
 
 **Justification:** This study is examining how record linkage alters DQ measures. Patients who never link are not the focus of this study. Also since the number of linkages is much smaller than non-linkages, removing the non-linked patient allows DQ changes to be seen.
 
+TECHNICAL NOTE: Network_IDs associated with a UID may change across runs. Thus for the current run, the most recently assigned network_id should be used for each UID. Tofind this, need to find the last run_id with an assigned network_id for every UID. The network_id assigned as the last_run_id is the assigned network_id for the current run. Thus, we query for max(run_id) group by UID and use that to assign max_nid.
 
+EXAMPLE: UID 10 is assigned NID=1111 in Run 1, assigned NID=3333 in Run 2, and assigned NID=6666 in the final run.
+
+* For Run 1, the correct NID is max(run_id)=1 where run_id <=1
+* For Run 2, the correct NID is max(run_id)=2 where run_id <=2
+* For Run 3, the correct NID is max(run_id)=3 where run_id <=3
+
+![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/example.png)
+
+
+## Set up the enviroment¶
