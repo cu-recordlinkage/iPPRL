@@ -713,3 +713,239 @@ order by obs_months asc;
     """.format(run_to_analyze=run_to_analyze, cumulative_to_use = cumulative_to_use)
     return query
 ```
+
+
+## Set up the plot functions for visually displaying results across all runs
+
+```
+# Plot functions
+
+def plot_global_counts(df,upper_limit):
+    
+    n_niddf = df[df['measure_variable']=='n_nid']
+    filtered_df = n_niddf[n_niddf['measure_value']<upper_limit]
+    
+    plt.figure(figsize=(25,20))
+    
+    g = sns.FacetGrid(filtered_df,col='run_id', col_wrap=4, height=3, aspect=1.5, legend_out=True, sharex=True, sharey=True)
+    x_order=filtered_df['cardinality'].sort_values(ascending=True).unique().astype(int)
+    g.map(sns.barplot,'cardinality','measure_value',order=x_order,palette='deep')
+    g.fig.subplots_adjust(top=0.9, right=0.9)
+    plt.suptitle("Global Network Links - Counts of NIDs by #PERSONS (SID) cardinality", fontsize=25)
+    
+    axes=g.axes.flatten()
+    for ax in range(len(axes)):
+        title=axes[ax].get_title()
+        axes[ax].set_title(title, fontsize=15)
+ #       axes[ax].set_ylabel('Number of NIDs', fontsize=15)
+        axes[ax].set_xticks(np.arange(0,len(x_order)+1))
+    return
+    
+
+def plot_global_pcts(df,lower_limit):
+    pct_niddf = global_statsdf[global_statsdf['measure_variable']=='pct_nid']
+    filtered_df = pct_niddf[pct_niddf['measure_value']>lower_limit]
+    
+    plt.figure(figsize=(25,20))
+    g = sns.FacetGrid(filtered_df,col='run_id', col_wrap=4, height=3, aspect=1.5, legend_out=True)
+    x_order=filtered_df['cardinality'].sort_values(ascending=True).unique().astype(int)
+    g.map(sns.barplot,'cardinality','measure_value',order=x_order,palette='deep')
+    g.fig.subplots_adjust(top=0.9, right=0.9)
+    plt.suptitle("Global Network Links - Percent of NIDs by #PERSONS (SIDs)", fontsize=25)
+
+    axes=g.axes.flatten()
+    for ax in range(len(axes)):
+        title=axes[ax].get_title()
+        axes[ax].set_title(title, fontsize=15)
+#        axes[ax].set_xlabel('Number of UIDs in link', fontsize=10)
+        axes[ax].set_ylabel('Percent', fontsize=15)
+        axes[ax].set_xticks(np.arange(0,len(x_order)+1))
+    return 
+
+
+def plot_vars_by_run(df,title='Default Title',y_text='Default Y axis label'):
+    
+    plt.figure(figsize=(25,20))
+    g = sns.FacetGrid(df,col='measure_variable',hue='type',col_wrap=3, height=3, aspect=1.5, legend_out=True)
+    g.map(sns.scatterplot,'run_id','measure_value', palette='deep').add_legend()
+    g.fig.subplots_adjust(top=0.9, right=0.9)
+    plt.setp(g._legend.get_title(),fontsize=15)
+    plt.setp(g._legend.get_texts(), fontsize=15)
+    plt.suptitle(title, fontsize=20)
+
+    axes=g.axes.flatten()
+    for ax in range(len(axes)):
+        title=axes[ax].get_title()
+        title=title.replace('measure_variable = ','')
+        axes[ax].set_title(title, fontsize=15)
+        axes[ax].set_xlabel('Run Number', fontsize=10)
+        axes[ax].set_ylabel(y_text, fontsize=10)
+        axes[ax]=plt.ticklabel_format(style='plain')
+        axes[ax]=plt.xticks(np.arange(df['run_id'].min(), df['run_id'].max()+1))
+    return
+ 
+
+def plot_vars_by_run_barplot(df,title='Default Title',y_text='Default Y axis label', link_type='lvs'):
+    sns.set_style('darkgrid')
+    sns.set_palette('deep')
+    plt.figure(figsize=(25,20))
+    g = sns.FacetGrid(df,col='measure_variable',col_wrap=3, height=3, aspect=1.5, legend_out=True, palette='deep')
+    x_order=df['run_id'].sort_values(ascending=True).unique().astype(int)
+    hue_order=['patient','network'] if link_type=='lvs' else ['encounter','patient','network']
+    g.map(sns.barplot, 'run_id','measure_value', data=df, hue='type',order=x_order, hue_order=hue_order, palette='deep', ci=None).add_legend()
+    g.fig.subplots_adjust(top=0.9, right=0.9)
+    plt.setp(g._legend.get_title(),fontsize=15)
+    plt.setp(g._legend.get_texts(), fontsize=15)
+    plt.suptitle(title, fontsize=20)
+
+    axes=g.axes.flatten()
+    for ax in range(len(axes)):
+        title=axes[ax].get_title()
+        title=title.replace('measure_variable = ','')
+        axes[ax].set_title(title, fontsize=15)
+        axes[ax].set_xlabel('Run Number', fontsize=10)
+        axes[ax].set_ylabel(y_text, fontsize=10)
+        axes[ax]=plt.xticks(np.arange(df['run_id'].min(), df['run_id'].max()+1))
+    sns.set_style('darkgrid')
+    sns.set_palette('deep')
+    return
+
+def plot_avg_obs_period(df):
+    df2=df[df['measure_variable']=='avg_obs_months'].copy()
+    df2['measure_value']= df2['measure_value'].astype(float)
+    x_order=df['run_id'].sort_values(ascending=True).unique().astype(int)
+    plt.figure(figsize=(25,10))
+    g=sns.barplot(x='run_id',y='measure_value', data=df2, hue='type', palette='deep',order=x_order)
+    g.legend(bbox_to_anchor=(1.01,1),borderaxespad=0,loc='upper left')
+    g.set_xlabel('Run Number', fontsize=20)
+    g.set_ylabel('Average Obs Period (months)', fontsize=20)
+    g.set_title('Observation Period: Average duration (months) by Run', fontsize=25)
+    plt.setp(g.get_legend().get_title(),fontsize=20)
+    plt.setp(g.get_legend().get_texts(), fontsize=25)
+    
+    return
+
+def plot_obsperiod_histogram(df, y_axis_title):
+    plt.figure(figsize=(25,20))
+    x_order=df['obs_months'].sort_values(ascending=True).unique().astype(int)
+    g = sns.FacetGrid(df,col='run_id',col_wrap=4, height=3, aspect=1.5, legend_out=True)
+    g.map(sns.barplot,'obs_months','measure_value', data=df, hue='type', palette='deep',order=x_order, ci=None).add_legend()
+    # g.map(sns.barplot,'obs_months','num_ids', order=x_order, palette='deep', ci=None).add_legend()
+    g.fig.subplots_adjust(top=0.9, right=0.9)
+    plt.setp(g._legend.get_title(), fontsize=15)
+    plt.setp(g._legend.get_texts(), fontsize=15)
+    plt.suptitle('Number of SIDs (encounters) contained in Observations Periods', fontsize=20)
+    
+   axes=g.axes.flatten()
+    for ax in range(len(axes)):
+        title=axes[ax].get_title()
+        title=title.replace('measure_variable = ','')
+        axes[ax].set_title(title,fontsize=15)
+        axes[ax].set_xlabel('Observation Months',fontsize=15)
+        axes[ax].set_ylabel(y_axis_title,fontsize=10)
+        axes[ax].set_xticks(np.arange(0,len(x_order)+1,1))
+    
+   return
+```
+
+## Set up the data partitions used only for incremental runs
+    
+```
+cumulatives=['aim4.year_2011_chd_clinvs', 
+              'aim4.quarter1_2012_chd_clinvs', 'aim4.quarter2_2012_chd_clinvs', 
+              'aim4.quarter3_2012_chd_clinvs', 'aim4.quarter4_2012_chd_clinvs', 
+              'aim4.month1_2013_chd_clinvs', 'aim4.month2_2013_chd_clinvs', 'aim4.month3_2013_chd_clinvs', 
+              'aim4.month4_2013_chd_clinvs', 'aim4.month5_2013_chd_clinvs', 'aim4.month6_2013_chd_clinvs', 
+              'aim4.month7_2013_chd_clinvs', 'aim4.month8_2013_chd_clinvs', 'aim4.month9_2013_chd_clinvs', 
+              'aim4.month10_2013_chd_clinvs', 'aim4.month11_2013_chd_clinvs','aim4.month12_2013_chd_clinvs']
+
+runs = list(range(1,18))
+```
+
+## Set environment & database
+
+```
+# Set working directory
+os.chdir("/home/michael.kahn/Documents/Aim4/Analytics")
+os.getcwd()
+
+# list files in working directory
+# os.listdir('.')
+
+# Connect to PostgreSQL
+# sign into localhost PG server as postgres user connected to honestbroker database
+
+# ipython-sql connection
+%sql postgresql://postgres:postgres@localhost/honestbroker
+# SQLalchemy engine
+#engine=create_engine('postgresql://postgres:postgres@localhost/honestbroker?options=-c search_path=aim4,tz')
+engine=create_engine(os.getenv('DB_CONNECT'))
+
+
+
+if 'postgres' in debug:
+    print("DEBUG: postgres connections using ipython-sql and SQLAlchemy\n\n")
+    
+    query="""select * from aim4.network_id limit 2;"""
+    result= %sql $query
+    print("Using query string from ipython-sql\n",result)
+    df=pd.read_sql(query,engine)
+    print("using query string from SQLAlehemy\n",df)
+;
+```
+DEBUG: postgres connections using ipython-sql and SQLAlchemy
+
+* postgresql://postgres:***@localhost/honestbroker
+2 rows affected.
+Using query string from ipython-sql
+ +-----+--------+------------+------------------+
+| uid | run_id | network_id | prior_network_id |
++-----+--------+------------+------------------+
+|  1  |   1    | 558397626  |    558397626     |
+|  2  |   1    | 558394972  |    558394972     |
++-----+--------+------------+------------------+
+using query string from SQLAlehemy
+    uid  run_id  network_id  prior_network_id
+0    1       1   558397626         558397626
+1    2       1   558394972         558394972
+
+
+## Set record linkage method and move data into Aim4 schema.
+All future queries only use aim4 or tz schema. Metadata table keeps track of RL method, schemas, run dates, etc. More rows added during processing
+
+```
+# Use network_id table for selected record linkage type into Aim4
+# Set metadata table to capture the context of the subsequent calculations
+
+query = text("""DROP TABLE IF EXISTS aim4.network_id;
+CREATE TABLE IF NOT EXISTS aim4.network_id AS SELECT * FROM %s.network_id;
+
+DROP TABLE IF EXISTS aim4.merged_source; 
+CREATE TABLE IF NOT EXISTS aim4.merged_source as
+    SELECT cast(uid as integer) as uid
+          , cast(run_id as integer) as run_id
+          , cast(source_id as integer) as source_id
+          , cast(id as integer) as id
+    FROM %s.merged_source;
+    
+DROP TABLE IF EXISTS aim4.metadata;
+CREATE TABLE IF NOT EXISTS aim4.metadata as
+  SELECT 'network_id.schema' as Attribute, '%s' as Val
+  UNION ALL
+  SELECT 'RL method','%s'
+  UNION ALL
+  SELECT 'Run DT', cast(date_trunc('minute',current_timestamp) as text);""" % (rl_type[0],rl_type[0], rl_type[0], rl_type[1]))
+
+with engine.connect() as connection:
+   connection.execute(query)
+
+%sql select * from aim4.metadata
+```
+
+* postgresql://postgres:***@localhost/honestbroker
+3 rows affected.
+
+attribute	val
+network_id.schema	job_26137
+RL method	ipprl
+Run DT	2021-06-26 11:53:00-06
