@@ -82,3 +82,110 @@ EXAMPLE: UID 10 is assigned NID=1111 in Run 1, assigned NID=3333 in Run 2, and a
 
 
 ## Set up the enviroment¶
+
+    #Imports
+
+    import os
+    from dotenv import load_dotenv
+    import pandas as pd
+    from sqlalchemy import create_engine, text
+    import numpy as np
+    import matplotlib as mpl
+    import matplotlib.pyplot as plt
+    import matplotlib.ticker as ticker
+    import matplotlib.gridspec as gridspec
+    import seaborn as sns
+
+    from datetime import datetime
+
+    #Globals
+    # Graphics globals
+    plt.style.use('classic')
+    sns.set_context('paper')
+    sns.set_style("whitegrid")
+    sns.set(font_scale=1)
+    #
+    %matplotlib inline
+    %load_ext sql
+
+    # Local execution
+    # Environment variables
+        #Local .env file only has one variable named DOTENV that is a full path to the real environment variables
+        load_dotenv()
+        real_dotenv=os.getenv('DOTENV')
+        load_dotenv(real_dotenv)
+
+
+        #Debugging options here: postgres.......
+        #debug=('postgres')
+        debug=('postgres')
+
+        print("Run DT: ",datetime.now())
+Run DT:  2021-06-26 11:53:48.681328
+
+
+## Broad Overview: A look at the linkage results
+* Patient-level linkage has occurred when #(SID)>2 for a NID
+* Encounter-level linkage has occurred when #(ENC_ID) > 2 for a NID (network linkage) or >2 for a SID (patient linkage)
+* Because each data increment increases the number of patients and encounters, the number of patient and encounter linkages grows across each incremental data load
+    * We show both the count of linkages and normalized linkages (each run sums to 100%) to eliminate effect of incremental data
+* In the following plots:
+    * X-axis: number of entities (patients or encounters) in a link
+    * Y-axis: number or precentage of linkages (patients or encounters) that have this number of entities
+    * Example in English: "There are 15 linkages (Y) that link together 3(X) patients would appear as a bar graph X=3, Y=15
+TODO: Create a pictureof this function
+
+```
+def global_linkage_stats():
+    query = """ 
+     with nid_sid as (
+     select distinct ni.run_id, ni.network_id as nid, rp.study_id as sid
+        from aim4.network_id ni join aim4.merged_source ms on ni.uid=ms.uid
+        join aim4.raw_person rp on ms.id::int = rp.study_id 
+)
+, sid_groups as (
+    -- counts of studyids per NID, partion() needed to keep studyid
+        select run_id, nid, sid, count(sid) over (partition by run_id,nid) as cardinality
+        from nid_sid
+)    
+    -- Filter out STUDYIDs that do not participate in at least one record linakage (Count(studyid>1) per NID)
+, linked_sids as (
+        select run_id, nid, sid, cardinality
+        from sid_groups
+        where cardinality > 1
+) 
+, nid_sid_counts as (
+	select run_id, cardinality, count(distinct nid) as n_nid, count(distinct sid) as n_sid
+	from linked_sids
+	where cardinality > 1
+	group by run_id, cardinality
+	order by run_id asc, cardinality asc, count(nid) asc
+	)
+, nid_studyid_totals as (
+   select run_id, cardinality, n_nid, n_sid
+   ,sum(n_nid*cardinality) over (partition by run_id) as sid_total
+   , sum(n_nid) over (partition by run_id) as nid_total
+   from nid_sid_counts 
+   )
+, nid_sid_pct as (
+    select run_id, cardinality, n_nid, n_sid, sid_total, nid_total, n_nid/nid_total as pct_nid, n_sid/sid_total as pct_sid
+    from nid_studyid_totals
+    order by run_id asc, cardinality asc
+)
+select run_id, cardinality, n_nid, n_sid, sid_total, nid_total, pct_nid, pct_sid
+from nid_sid_pct
+"""
+return query
+
+```
+        
+
+## DQ Measure: COMPLETENESS:
+Completeness calculates the presence/absence of a data value without regard to its value. For unlinked rows, either a value is present or it is not. For linked data, a value in at least one linked member of the linked set is sufficient to say that a value is present for that link.
+
+Completeness is reported as a percent: # with value present / Total #. The numerators & denominators are different for unlinked and linked:
+
+   * Unlinked (left figure): Denominator = Number of rows by_sid (patient) or by_enc_id (encounter); Numerator = Number of rows by_sid or by_enc_id with a non-NULL value
+   * Linked (right figure): Denominator = Number of Linked Network_IDs (network); Numerator = Number of Linked Network_IDs with at least one non-NULL row (Count by_nid)
+
+NOTE: This metric does not look if multiple linked values in linked data agree. This feature is examined in value density.
