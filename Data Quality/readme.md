@@ -8,6 +8,28 @@ This Jupyter Lab notebook embodies the analytics used to explore Aim 4 of the ab
 
 This notebook uses a data set containing full personal health information (PHI) as defined by the Department of Health and Human Services HIPAA regulations. Thus, the underlying data sets cannot be made available. This notebook only runs within the secure EUREKA analytics environment maintained by Health Data Compass in the Colorado Center for Personalized Medicine at CU-AMC. However, the logic for analyzing data quality before and after record linkage is generic. A sample data set based on synthetic data will be added to this notebook at a future date.
 
+## Table of Contents  
+* [Select which record linkage method to be analyzed](#SelectRLmethodtobeanalyzed)    
+* [Data quality measures in Record linkage](#DQmeasuresRecordlinkage)  
+* [Changelog](#changelog) <a name="changelog"/>
+* [Technical Preamble](#TechnicalPreamble) <a name="TechnicalPreamble"/>
+* [Set up the enviroment](#setupenvironment) <a name="setupenvironment"/>
+* [Broad Overview: A look at the linkage results](#broadoverview) <a name="broadoverview"/>
+* [DQ Measure: Completeness](#DQcompleteness) <a name="DQcompleteness"/>
+* [DQ Measure: Data density](#DQdatadensity) <a name="DQdatadensity"/>
+* [DQ Measure: Observation Period](#DQObservationperiod) <a name="DQObservationperiod"/>
+* [Set up the plot functions](#Setupplotfunctions) <a name="Setupplotfunctions"/>
+* [Set up the data partitions](#Setupdatapartitions) <a name="Setupdatapartitions"/>
+* [Set environment & database](#Setenvironmentdatabase) <a name="Setenvironmentdatabase"/>
+* [Set record linkage method](#Setrecordlinkagemethod) <a name="Setrecordlinkagemethod"/>
+* [Global Network stats](#GlobalNetworkstats) <a name="GlobalNetworkstats"/>
+* [Results: Completeness](#ResultsCompleteness) <a name="ResultsCompleteness"/> 
+* [Results: Data Density](#ResultsDataDensity) <a name="ResultsDataDensity"/>
+* [End](#End) <a name="End"/>
+
+
+## Select which record linkage method to be analyzed <a name="SelectRLmethodtobeanalyzed"/>
+Input [1] 
 ```
 # Select which record linkage method to be analyzed
 ctrl = ['job_28433','ctrl']
@@ -23,7 +45,7 @@ else:
     incremental = True
 ```
 
-## Data quality measures in Record linkage
+## Data quality measures in Record linkage <a name="DQmeasuresRecordlinkage"/>
 The core DQ idea is to compare DQ measures using unlinked rows versus linked rows.
 
 * Linkage can occur at:
