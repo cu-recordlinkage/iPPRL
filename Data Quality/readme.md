@@ -11,21 +11,21 @@ This notebook uses a data set containing full personal health information (PHI) 
 ## Table of Contents  
 * [Select which record linkage method to be analyzed](#SelectRLmethodtobeanalyzed)    
 * [Data quality measures in Record linkage](#DQmeasuresRecordlinkage)  
-* [Changelog](#changelog) <a name="changelog"/>
-* [Technical Preamble](#TechnicalPreamble) <a name="TechnicalPreamble"/>
-* [Set up the enviroment](#setupenvironment) <a name="setupenvironment"/>
-* [Broad Overview: A look at the linkage results](#broadoverview) <a name="broadoverview"/>
-* [DQ Measure: Completeness](#DQcompleteness) <a name="DQcompleteness"/>
-* [DQ Measure: Data density](#DQdatadensity) <a name="DQdatadensity"/>
-* [DQ Measure: Observation Period](#DQObservationperiod) <a name="DQObservationperiod"/>
-* [Set up the plot functions](#Setupplotfunctions) <a name="Setupplotfunctions"/>
-* [Set up the data partitions](#Setupdatapartitions) <a name="Setupdatapartitions"/>
-* [Set environment & database](#Setenvironmentdatabase) <a name="Setenvironmentdatabase"/>
-* [Set record linkage method](#Setrecordlinkagemethod) <a name="Setrecordlinkagemethod"/>
-* [Global Network stats](#GlobalNetworkstats) <a name="GlobalNetworkstats"/>
-* [Results: Completeness](#ResultsCompleteness) <a name="ResultsCompleteness"/> 
-* [Results: Data Density](#ResultsDataDensity) <a name="ResultsDataDensity"/>
-* [End](#End) <a name="End"/>
+* [Changelog](#changelog)
+* [Technical Preamble](#TechnicalPreamble)
+* [Set up the enviroment](#setupenvironment)
+* [Broad Overview: A look at the linkage results](#broadoverview) 
+* [DQ Measure: Completeness](#DQcompleteness) 
+* [DQ Measure: Data density](#DQdatadensity)
+* [DQ Measure: Observation Period](#DQObservationperiod) 
+* [Set up the plot functions](#Setupplotfunctions)
+* [Set up the data partitions](#Setupdatapartitions)
+* [Set environment & database](#Setenvironmentdatabase)
+* [Set record linkage method](#Setrecordlinkagemethod) 
+* [Global Network stats](#GlobalNetworkstats) 
+* [Results: Completeness](#ResultsCompleteness) 
+* [Results: Data Density](#ResultsDataDensity)
+* [End](#End)
 
 
 ## Select which record linkage method to be analyzed <a name="SelectRLmethodtobeanalyzed"/>
@@ -1007,12 +1007,10 @@ Input[12]
 plot_global_counts(global_statsdf[global_statsdf['measure_variable']=='n_nid'],10000)
 plot_global_pcts(global_statsdf[global_statsdf['measure_variable']=='pct_nid'],0.000001)
 ```
-<Figure size 1800x1440 with 0 Axes>
 
 ![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/globalnetworks.png)
 
 
-<Figure size 1800x1440 with 0 Axes>
 ![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/globalnetworks2.png)
 
 Input[13]
