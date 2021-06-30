@@ -69,7 +69,7 @@ Many other DQ concepts exist but not all have equivalent computational analogues
 3. The JupyterLab notebook Aim4_Data_Partition_Scripts will help create these scripts from the existing data sets
 
 
-## Changelog
+## Changelog <a name="changelog"/>
 * 2021-06-20: All DQ runs for iPPRL, iCTRL, PPRL and CTRL executed
 * 2021-06-15: SQL for Completeness/Data Density reimplemented as one query.
 * 2021-05-26: Replaced network_id with last_network_id for each run to get "final" NID for that run
@@ -77,7 +77,7 @@ Many other DQ concepts exist but not all have equivalent computational analogues
 * 2021-06-02: Josh converted one-shot run to loop over 17 runs; created final data structures for all run
 
 
-## Technical Preamble: Description of Initial Data Set & Variables naming conventions
+## Technical Preamble: Description of Initial Data Set & Variables naming conventions <a name="TechnicalPreamble"/>
 ![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/technicalpreamble.png)
 
 * Data aggregated at the NID level are "network linked". Variables are named "_by_nid"
@@ -103,8 +103,9 @@ EXAMPLE: UID 10 is assigned NID=1111 in Run 1, assigned NID=3333 in Run 2, and a
 ![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/example.png)
 
 
-## Set up the enviroment¶
-
+## Set up the enviroment <a name="setupenvironment"/>
+Input [2]
+```
     #Imports
 
     import os
@@ -143,10 +144,11 @@ EXAMPLE: UID 10 is assigned NID=1111 in Run 1, assigned NID=3333 in Run 2, and a
         debug=('postgres')
 
         print("Run DT: ",datetime.now())
+```
 Run DT:  2021-06-26 11:53:48.681328
 
 
-## Broad Overview: A look at the linkage results
+## Broad Overview: A look at the linkage results <a name="broadoverview"/>
 * Patient-level linkage has occurred when #(SID)>2 for a NID
 * Encounter-level linkage has occurred when #(ENC_ID) > 2 for a NID (network linkage) or >2 for a SID (patient linkage)
 * Because each data increment increases the number of patients and encounters, the number of patient and encounter linkages grows across each incremental data load
@@ -156,6 +158,8 @@ Run DT:  2021-06-26 11:53:48.681328
     * Y-axis: number or precentage of linkages (patients or encounters) that have this number of entities
     * Example in English: "There are 15 linkages (Y) that link together 3(X) patients would appear as a bar graph X=3, Y=15
 TODO: Create a pictureof this function
+
+Input [3]
 
 ```
 def global_linkage_stats():
@@ -202,7 +206,7 @@ return query
 ```
         
 
-## DQ Measure: COMPLETENESS:
+## DQ Measure: COMPLETENESS: <a name="DQcompleteness"/>
 Completeness calculates the presence/absence of a data value without regard to its value. For unlinked rows, either a value is present or it is not. For linked data, a value in at least one linked member of the linked set is sufficient to say that a value is present for that link.
 
 Completeness is reported as a percent: # with value present / Total #. The numerators & denominators are different for unlinked and linked:
@@ -218,7 +222,8 @@ Completeness is computed in two steps: Counts and Percentage. The Completness me
 This query only calculates count. Percentages are calculated using Pandas
 Completness is calculated for patient-level linkage variables(lvs by_sid) and for encounter-level clinical variables (clinvs by_enc_id)
 
-### Linkage Variables 
+Input [4]
+#### Linkage Variables 
 ```
 # Linkage Vars
 
@@ -388,8 +393,8 @@ def lvs_distinct_counts_by_nid_sid(run_to_analyze):
    return query  
 ```
 
-
-### Clinical Variables
+Input [5]
+#### Clinical Variables
 
 ```
 # Clinical Vars
@@ -560,7 +565,7 @@ with nid_sid as (
 
 
 
-### DQ Measure: Data density
+### DQ Measure: Data density <a name="DQdatadensity"/>
 Completeness records only the presence/absence (Boolean) of a data element. Data density measures the number of data elements that are associated with a linked patient record ("by_nid") compared to an unlinked patient record ("by_sid") and also compared to an unlinked encounter ("by_sid"/by_enc_id).
 
 Denominators are:
@@ -572,7 +577,7 @@ For unlinked records, data density and data completeness are identical. _**Data 
 
 ![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/labnotebook2.png)
 
-## DQ Measure: Observation Period
+## DQ Measure: Observation Period <a name="DQObservationperiod"/>
 Observation period measures the duration between a start date and an end date. Because data are provided at the month level, observation period durations are reported in the number of months. Events with Start_Date = End_Date are assigned a duration of 1 month.
 
 Calcuations:
@@ -583,6 +588,7 @@ Calcuations:
 
 ![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/labnotebook3.png)
 
+Input[6]
 ```
 def obsperiod_stats(run_to_analyze,cumulative_to_use):
     query = """
@@ -737,8 +743,8 @@ order by obs_months asc;
 ```
 
 
-## Set up the plot functions for visually displaying results across all runs
-
+## Set up the plot functions for visually displaying results across all runs <a name="Setupplotfunctions"/>
+Input[7]
 ```
 # Plot functions
 
@@ -870,8 +876,8 @@ def plot_obsperiod_histogram(df, y_axis_title):
    return
 ```
 
-## Set up the data partitions used only for incremental runs
-    
+## Set up the data partitions used only for incremental runs <a name="Setupdatapartitions"/>
+Input[8]    
 ```
 cumulatives=['aim4.year_2011_chd_clinvs', 
               'aim4.quarter1_2012_chd_clinvs', 'aim4.quarter2_2012_chd_clinvs', 
@@ -884,8 +890,8 @@ cumulatives=['aim4.year_2011_chd_clinvs',
 runs = list(range(1,18))
 ```
 
-## Set environment & database
-
+## Set environment & database <a name="Setenvironmentdatabase"/>
+Input[9]
 ```
 # Set working directory
 os.chdir("/home/michael.kahn/Documents/Aim4/Analytics")
@@ -917,24 +923,33 @@ if 'postgres' in debug:
 ```
 DEBUG: postgres connections using ipython-sql and SQLAlchemy
 
+Output[9]
+
 * postgresql://postgres:***@localhost/honestbroker
 2 rows affected.
-Using query string from ipython-sql
- +-----+--------+------------+------------------+
+
+
+**Using query string from ipython-sql**__
+
 | uid | run_id | network_id | prior_network_id |
-+-----+--------+------------+------------------+
+|-----|--------|------------|------------------|
 |  1  |   1    | 558397626  |    558397626     |
 |  2  |   1    | 558394972  |    558394972     |
-+-----+--------+------------+------------------+
-using query string from SQLAlehemy
-    uid  run_id  network_id  prior_network_id
-0    1       1   558397626         558397626
-1    2       1   558394972         558394972
 
 
-## Set record linkage method and move data into Aim4 schema.
+
+**using query string from SQLAlehemy**__
+
+|    | uid | run_id | network_id | prior_network_id |
+|----|-----|--------|------------|------------------|
+| 0  |  1  |   1    | 558397626  |    558397626     |
+| 1  |  2  |   1    | 558394972  |    558394972     |
+
+
+## Set record linkage method and move data into Aim4 schema <a name="Setrecordlinkagemethod"/>
 All future queries only use aim4 or tz schema. Metadata table keeps track of RL method, schemas, run dates, etc. More rows added during processing
 
+Input[10]
 ```
 # Use network_id table for selected record linkage type into Aim4
 # Set metadata table to capture the context of the subsequent calculations
@@ -964,10 +979,312 @@ with engine.connect() as connection:
 %sql select * from aim4.metadata
 ```
 
+Output[10]
+
 * postgresql://postgres:***@localhost/honestbroker
 3 rows affected.
 
-attribute	val
-network_id.schema	job_26137
-RL method	ipprl
-Run DT	2021-06-26 11:53:00-06
+| attribute | val | 
+|-----|--------|
+|  RL method  |   ipprl    | 
+|  Run DT  |   2021-06-26 11:53:00-06    | 
+	
+
+	
+## Global Network stats  <a name="GlobalNetworkstats"/>
+Input[11]
+```
+	# Overall linkage summary statistics by nid, uid: Counts and percentagae
+	global_statsdf=pd.read_sql(global_linkage_stats(),engine)
+	global_statsdf['measure_name']='global_linkage_stats'
+	global_statsdf = pd.melt(global_statsdf, id_vars=['measure_name','run_id','cardinality'],var_name='measure_variable',value_name='measure_value')
+```
+
+Input[12]
+```
+# Plots
+
+plot_global_counts(global_statsdf[global_statsdf['measure_variable']=='n_nid'],10000)
+plot_global_pcts(global_statsdf[global_statsdf['measure_variable']=='pct_nid'],0.000001)
+```
+<Figure size 1800x1440 with 0 Axes>
+
+![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/globalnetworks.png)
+
+
+<Figure size 1800x1440 with 0 Axes>
+![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/globalnetworks2.png)
+
+Input[13]
+```
+%%time
+
+import time
+
+run_lvs_raw_countsdf = pd.DataFrame()
+run_lvs_raw_flagsdf = pd.DataFrame()
+run_clinvs_raw_countsdf = pd.DataFrame()
+run_clinvs_raw_flagsdf = pd.DataFrame()
+run_clinvs_compl_df = pd.DataFrame()
+run_clinvs_raw_distintcountsdf = pd.DataFrame()
+run_clinvs_raw_distinctcountsdf = pd.DataFrame()
+run_lvs_raw_distintcountsdf = pd.DataFrame()
+lvs_compl_df = pd.DataFrame()
+lvs_dd_df = pd.DataFrame()
+clinvs_compl_df = pd.DataFrame()
+run_clinvs_dd_df = pd.DataFrame()
+clinvs_dd_df = pd.DataFrame()
+run_clinvs_vd_df = pd.DataFrame()
+lvs_vd_df = pd.DataFrame()
+clinvs_vd_df = pd.DataFrame()
+
+run_obsperiod_stats = pd.DataFrame()
+obsperiod_statsdf = pd.DataFrame()
+run_obsperiod_histogram = pd.DataFrame()
+obsperiod_histogramdf = pd.DataFrame()
+
+
+# Incremental record linkage methods use all data increments
+# Nonincremental record linkage methods only uses the last (complete) data set
+
+if incremental == True:
+    run_range = range(17)
+else: 
+    run_range = range(16,17)
+
+    
+for index in run_range:
+    
+    run_to_analyze=runs[index]
+    cumulative_to_use = cumulatives[index]
+    
+    run_lvs_raw_countsdf = pd.read_sql(lvs_counts_by_nid_sid(run_to_analyze),engine)
+    run_lvs_raw_countsdf.drop('id',axis=1,inplace=True)
+    run_lvs_raw_flagsdf = run_lvs_raw_countsdf.apply(lambda x:(x>0).astype(int) if x.name in ['denominator','n_fn','n_ln','n_gender','n_dob','n_ssn','n_address','n_city','n_state','n_zip','n_phone','n_ssn4'] else x)
+
+    
+    run_clinvs_raw_countsdf = pd.read_sql(clinvs_counts_by_nid_sid_encid(run_to_analyze,cumulative_to_use),engine)
+    run_clinvs_raw_countsdf.drop('id',axis=1,inplace=True)
+    run_clinvs_raw_flagsdf = run_clinvs_raw_countsdf.apply(lambda x:(x>0).astype(int) if x.name in ['denominator','n_startdt','n_enddt','n_enc_type','n_prov_type','n_hgt','n_wgt','n_siteid'] else x)
+
+    # Completeness -- Linkage Var
+    run_lvs_compl_df = run_lvs_raw_flagsdf.groupby(['run_id','type','id_field'],as_index=False).mean()
+    run_lvs_compl_df['measure_name'] = 'lvs_data_completeness'
+    lvs_compl_df = pd.concat([lvs_compl_df,run_lvs_compl_df],axis=0)
+    
+    # Completeness --Clinical
+    run_clinvs_compl_df = run_clinvs_raw_flagsdf.groupby(['run_id','type','id_field'],as_index=False).mean()
+    run_clinvs_compl_df['measure_name'] = 'clinvs_data_completeness'
+    clinvs_compl_df = pd.concat([clinvs_compl_df,run_clinvs_compl_df],axis=0)
+    
+    # Data Density -- Linkage Vars
+    run_lvs_dd_df=run_lvs_raw_countsdf.groupby(['run_id','type','id_field'],as_index=False).mean() 
+    run_lvs_dd_df['measure_name'] = 'lvs_data_density'
+    lvs_dd_df = pd.concat([lvs_dd_df,run_lvs_dd_df],axis=0)
+    
+    # Data Density -- Clinical
+    run_clinvs_dd_df=run_clinvs_raw_countsdf.groupby(['run_id','type','id_field'],as_index=False).mean()  
+    run_clinvs_dd_df['measure_name'] = 'clinvs_data_density'
+    clinvs_dd_df = pd.concat([clinvs_dd_df,run_clinvs_dd_df],axis=0)
+    
+    # Value Density -- Linkage Vars
+    run_lvs_raw_distinctcountsdf = pd.read_sql(lvs_distinct_counts_by_nid_sid(run_to_analyze),engine)
+    run_lvs_raw_distinctcountsdf.drop('id',axis=1,inplace=True)
+    run_lvs_vd_df=run_lvs_raw_distinctcountsdf.groupby(['run_id','type','id_field'],as_index=False).mean() 
+    run_lvs_vd_df['measure_name'] = 'lvs_data_density'
+    lvs_vd_df = pd.concat([lvs_vd_df,run_lvs_vd_df],axis=0)
+    
+    # Value Density -- Clinical
+    run_clinvs_raw_distintcountsdf = pd.read_sql(clinvs_distinct_counts_by_nid_sid_encid(run_to_analyze,cumulative_to_use),engine)
+    run_clinvs_raw_distintcountsdf.drop('id',axis=1,inplace=True)
+    run_clinvs_vd_df=run_clinvs_raw_distintcountsdf.groupby(['run_id','type','id_field'],as_index=False).mean()  
+    run_clinvs_vd_df['measure_name'] = 'clinvs_value_density'
+    clinvs_vd_df = pd.concat([clinvs_vd_df,run_clinvs_vd_df],axis=0)   
+    
+    # Observation Period
+
+    
+    
+    # observtion period
+    
+    run_obsperiod_stats = pd.read_sql(obsperiod_stats(run_to_analyze,cumulative_to_use),engine)
+    run_obsperiod_stats['run_id'] = run_to_analyze
+    run_obsperiod_stats['measure_name'] = 'obs_period_months'
+    obsperiod_statsdf = pd.concat([obsperiod_statsdf,run_obsperiod_stats],axis=0)
+    
+    run_obsperiod_histogram = pd.read_sql(obsperiod_histogram(run_to_analyze,cumulative_to_use),engine)
+    run_obsperiod_histogram['run_id']=run_to_analyze
+    run_obsperiod_histogram['measure_name'] = 'obs_period_histogram'
+    obsperiod_histogramdf = pd.concat([obsperiod_histogramdf,run_obsperiod_histogram],axis=0)
+    
+    # end of DQ measures for this run_id
+    
+    print(run_to_analyze, time.strftime('%X %Z'))
+```
+
+1 11:53:59 AM MDT
+2 11:54:03 AM MDT
+3 11:54:09 AM MDT
+4 11:54:16 AM MDT
+5 11:54:26 AM MDT
+6 11:54:35 AM MDT
+7 11:54:47 AM MDT
+8 11:55:00 AM MDT
+9 11:55:15 AM MDT
+10 11:55:31 AM MDT
+11 11:55:49 AM MDT
+12 11:56:10 AM MDT
+13 11:56:34 AM MDT
+14 11:56:59 AM MDT
+15 11:57:27 AM MDT
+16 11:57:57 AM MDT
+17 11:58:30 AM MDT
+CPU times: user 30.8 s, sys: 997 ms, total: 31.8 s
+Wall time: 4min 34s
+
+
+Input[14]
+```
+# Linkage Variables
+lvs_compl_df2 = pd.melt(lvs_compl_df,id_vars=['measure_name','type','id_field','run_id'],
+        var_name='measure_variable',value_name='measure_value')
+lvs_dd_df2 = pd.melt(lvs_dd_df,id_vars=['measure_name','type','id_field','run_id'],
+        var_name='measure_variable',value_name='measure_value')
+lvs_vd_df2 = pd.melt(lvs_vd_df,id_vars=['measure_name','type','id_field','run_id'],
+        var_name='measure_variable',value_name='measure_value')
+
+# Clinical Variables
+clinvs_compl_df2 = pd.melt(clinvs_compl_df,id_vars=['measure_name','type','id_field','run_id'],
+        var_name='measure_variable',value_name='measure_value')
+clinvs_dd_df2 = pd.melt(clinvs_dd_df,id_vars=['measure_name','type','id_field','run_id'],
+        var_name='measure_variable',value_name='measure_value')
+clinvs_vd_df2 = pd.melt(clinvs_vd_df,id_vars=['measure_name','type','id_field','run_id'],
+        var_name='measure_variable',value_name='measure_value')
+
+
+obsperiod_statsdf2 = pd.melt(obsperiod_statsdf[['type','run_id','measure_name','avg_obs_months']],id_vars=['measure_name','type','run_id'],
+        var_name='measure_variable',value_name='measure_value')
+
+obsperiod_histogramdf2 = pd.melt(obsperiod_histogramdf[['run_id','type','obs_months','measure_name','n_ids','pct_obs_months']],id_vars=['measure_name','type','run_id','obs_months'],
+        var_name='measure_variable',value_name='measure_value')
+```
+
+## Results: Completeness by Run Number <a name="ResultsCompleteness"/> 
+Non-incremental methods (CTRL, PPRL) only have a single run
+
+Input[15]
+```
+# Completeness
+plot_vars_by_run_barplot(lvs_compl_df2,'New Completeness- Linkage Variables','Counts','lvs')
+plot_vars_by_run_barplot(clinvs_compl_df2,'New Completeness - Clinical Variables','Counts','clinvs')
+```
+
+![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/newcompleteness.png)
+
+
+![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/newcompleteness2.png)
+
+
+## Results: Data Density by Run Number
+Non-incremental methods (CTRL, PPRL) only have a single run
+
+Input[16]
+```
+# Data Density
+plot_vars_by_run_barplot(lvs_dd_df2,'Data Density - Linkage Variables','Mean Counts per ID','lvs')
+plot_vars_by_run_barplot(clinvs_dd_df2,'Data Density - Clinical Variables','Mean Counts per ID','clinvs')
+```
+
+
+![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/datadensity.png)
+
+
+![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/datadensity2.png)
+
+Input[17]
+```
+<hr style="border:2px solid black"> </hr>
+
+# Results: Value Density by Run Number
+Non-incremental methods (CTRL, PPRL) only have a single run
+```
+
+File "/tmp/xpython_11557/767755676.py", line 1
+    <hr style="border:2px solid black"> </hr>
+    ^
+SyntaxError: invalid syntax
+
+
+Input[18]
+```
+# Value Density
+plot_vars_by_run_barplot(lvs_vd_df2,'Value Density - Linkage Variables','Mean Unique Counts per ID','lvs')
+plot_vars_by_run_barplot(clinvs_vd_df2,'Value Density - Clinical Variables','Mean Unique Counts per ID','clinvs')
+```
+
+![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/valuedensity.png)
+
+![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/valuedensity2.png)
+
+Input[19]
+```
+<hr style="border:2px solid black"> </hr>
+
+# Results: Observation Period Duration: Average in months by run number
+Non-incremental methods (CTRL, PPRL) only have a single run
+```
+ File "/tmp/xpython_11557/292260825.py", line 1
+    <hr style="border:2px solid black"> </hr>
+    ^
+SyntaxError: invalid syntax
+
+
+Input[20]
+```
+plot_avg_obs_period(obsperiod_statsdf2)
+```
+
+![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/obsperiod.png)
+
+Input[21]
+```
+<hr style="border:2px solid black"> </hr>
+
+# Results: Observation Period by Network ID: Counts by Run Number
+Non-incremental methods (CTRL, PPRL) only have a single run
+```
+
+File "/tmp/xpython_11557/2206618528.py", line 1
+    <hr style="border:2px solid black"> </hr>
+    ^
+SyntaxError: invalid syntax
+
+Input[22]
+```
+# Observation Period by n_ids
+plot_obsperiod_histogram(obsperiod_histogramdf2.loc[obsperiod_histogramdf2['measure_variable']=='n_ids'],'Observation Periods (Counts)')
+```
+
+![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/numsids.png)
+
+
+Input[23]
+```
+# Observation Period by pct_obs_month
+plot_obsperiod_histogram(obsperiod_histogramdf2.loc[obsperiod_histogramdf2['measure_variable']=='pct_obs_months'],'Observation Periods (Percent)')
+```
+
+![alt text](https://github.com/cu-recordlinkage/iPPRL/blob/master/images/numsids2.png)
+
+## End <a name="End"/>
+Input[24]
+```
+plot_avg_obs_period(obsperiod_statsdf2)
+```
+Run DT:  2021-06-26 12:02:39.726916
+
+Input[ ]
+```
+!jupyter-nbconvert --to pdfviahtml mgkahn_Aim4_Notebooks_IPPRL_Notebook.ipynb
+```
+[NbConvertApp] Converting notebook mgkahn_Aim4_Notebooks_IPPRL_Notebook.ipynb to pdfviahtml
